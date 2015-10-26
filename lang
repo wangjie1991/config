@@ -1,0 +1,15 @@
+echo $LANG
+
+sudo vi /var/lib/locales/supported.d/local
+zh_CN.GBK GBK
+zh_CN.GB2312 GB2312 
+
+sudo dpkg-reconfigure --force locales
+
+vi ~/.profile
+export LANG=zh_CN.GBK
+echo $LANG
+
+vi .vimrc
+set fileencodings=utf8,gbk
+
