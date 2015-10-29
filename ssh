@@ -1,0 +1,16 @@
+
+sudo apt-get install openssh-server
+
+ps -e | grep ssh
+sshd
+
+sudo vi /etc/ssh/sshd_config
+#PermitRootLogin without-password
+PermitRootLogin yes
+
+error:
+service ssh start
+/etc/init.d/ssh start
+ssh localhost
+
+
