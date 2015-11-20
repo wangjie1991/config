@@ -1,0 +1,16 @@
+install:
+tar zxvf speex-1.2rc1.tar.gz
+cd speex-1.2rc1
+enter root
+yum install libogg-devel
+./configure
+make
+make install
+speexenc | speexdec
+
+encode
+speexenc --quality 7 X.wav X.spx  //compression ratio ~ 10%
+speexenc X.wav X.spx  //compression ratio ~ 12.5%
+
+decode
+speexdec X.spx X_spx.wav
