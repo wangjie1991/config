@@ -76,6 +76,8 @@ goat
   python PrepareTool.py -t wav -F -i wav.list.shijigaotongtest.filted -T split.text.shijigaotongtest
 
   # get other file
+  mv fbank40/feats.scp fbank40/feats.scp.old
+  sort fbank40/feats.scp.old > fbank40/feats.scp
   ./getSpkInfo.sh fbank40/feats.scp
   python getTextForTest.py split.text.shijigaotongtest fbank40/feats.scp fbank40/text
   python getWavForTest.py wav.list.shijigaotongtest.filted fbank40/feats.scp fbank40/wav.scp
@@ -90,8 +92,20 @@ pisces(192.168.42.46)
   cd 20151207_shijigaotong/fbank40/
   sed -i 's;prepareTools;trainArks/20151207_shijigaotong;g' feats.scp
 
+  # data mixture
+  # $1=20150609_service/haobangshou && $2=20150926_shijigaotong/fbank40_863
+  cd ../
+  mkdir sort
+  cat fbank40/feats.scp $1/feats.scp $2/feats.scp | sort > sort/feats.scp
+  cat fbank40/spk2gender $1/spk2gender $2/spk2gender | sort > sort/spk2gender
+  cat fbank40/spk2utt $1/spk2utt $2/spk2utt | sort > sort/spk2utt
+  cat fbank40/text $1/text $2/text | sort > sort/text
+  cat fbank40/utt2spk $1/utt2spk $2/utt2spk | sort > sort/utt2spk
+  cat fbank40/wav.scp $1/wav.scp $2/wav.scp | sort > sort/wav.scp
+
   # training prepare
   mkdir -p /home/wangjie/pachira_mpe/data/shijigaotong/train/
+  cd sort
   cp feats.scp spk2gender spk2utt text utt2spk wav.scp ~/pachira_mpe/data/shijigaotong/train/
 
 
