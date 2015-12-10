@@ -1,0 +1,97 @@
+shijigaotong project as example
+
+
+dragon:
+
+  cd /var/samba/data/AM/
+
+backup:
+  cd data_original/shijigaotong/
+  cp mouse:train train
+  cp mouse:test test
+
+refine:
+  cd data_refine/shijigaotongtest/
+
+  # rename
+  find /var/samba/data/AM/data_original/shijigaotong/train -name "*.wav" > wav.list
+  python rename.py wav.list rename.wav.sh shijigaotong wav
+  sed 's;wav;TextGrid;g' rename.wav.sh > rename.TextGrid.sh
+  mkdir newName
+  chmod u+x rename.wav.sh
+  chmod u+x rename.TextGrid.sh
+  ./rename.wav.sh
+  ./rename.TextGrid.sh
+
+  # split
+  ls newName/*.TextGrid > tg.list
+  python ParseInfoFromTextGrid.py tg.list outcutWavList outtrans
+  sed -i 's;XXX;newName;g' outcutWavList
+  ./cutWaveSeg outcutWavList 8000 wav 0
+
+  # SplitWord
+  cp outtrans CVersion/curTrans
+  cd CVersion
+  cp curTrans curTransBk
+  ./run.sh
+  # check statistic to modify wrong charactor
+  # '。', '，', '*' or other
+  cat statistic
+  sed -i 's;。;;g' curTrans
+  cp split.txt sentence.mlf > goat
+
+
+goat 
+
+  # prepare data
+  cd /disk4/data/shijigaotongtest
+  mkdir sentense
+  mkdir tokenised
+  scp -r dragon:/data_refine/shijigaotongtest/train/wav ./
+  scp -r dragon:/data_refine/shijigaotongtest/train/sentense.mlf sentense/
+  scp -r dragon:/data_refine/shijigaotongtest/train/split.text tokenised/
+  find /disk4/data/shijigaotongtest/wav -name "*.wav" > wav.list
+  cp wav.list /disk2/prepareTools/wav.list.shijigaotongtest
+  cp tokenised/split.text /disk2/prepareTools/split.text.shijigaotongtest
+
+  # extract feature
+  cd /disk2/prepareTools
+
+  # split.text items is less than wav.list commonly
+  # we should filter wav.list according to split.text
+  python checkWav.py wav.list.shijigaotongtest split.text.shijigaotongtest wav.list.shijigaotongtest.filted
+
+  # plp configuration file : pt_0_LiveCMVN_optimized.cfg
+  # fbanks configuration file : fbanks.cfg
+  # TARGETRATE=100000.0 means frame shift is 10ms
+  # SOURCERATE=1250 means wav sample rate is 8000, 625 means 16000
+  # WINDOWSIZE=250000.0 means frame width is 25ms
+
+  # PrepareTool.py run all the process of feature extractation.
+  # To understand the details of feature extractation, please read
+  # the source code of PrepareTool.py fully.
+  # multi_code.pl run the cmd in multiple thread. Note that multi_code.pl
+  # in prepareTools/, prepareTools/FE_pachira/ and prepareTools/feat_bin/
+  # are different.
+  python PrepareTool.py -t wav -F -i wav.list.shijigaotongtest.filted -T split.text.shijigaotongtest
+
+  # get other file
+  ./getSpkInfo.sh fbank40/feats.scp
+  python getTextForTest.py split.text.shijigaotongtest fbank40/feats.scp fbank40/text
+  python getWavForTest.py wav.list.shijigaotongtest.filted fbank40/feats.scp fbank40/wav.scp
+
+
+pisces(192.168.42.46)
+
+  # feature files process
+  cd /disk2/trainArks/
+  mkdir 20151207_shijigaotong
+  scp -r wangjie@goat:/disk2/prepareTools/fbank40 20151207_shijigaotong/
+  cd 20151207_shijigaotong/fbank40/
+  sed -i 's;prepareTools;trainArks/20151207_shijigaotong;g' feats.scp
+
+  # training prepare
+  mkdir -p /home/wangjie/pachira_mpe/data/shijigaotong/train/
+  cp feats.scp spk2gender spk2utt text utt2spk wav.scp ~/pachira_mpe/data/shijigaotong/train/
+
+

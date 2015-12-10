@@ -14,3 +14,5 @@ speexenc X.wav X.spx  //compression ratio ~ 12.5%
 
 decode
 speexdec X.spx X_spx.wav
+
+
