@@ -1,6 +1,7 @@
 vim-office-website:
 vim.wendal.net
 
+ssh-keygen -t rsa -C "mononogy@sina.cn"
 
 git account:
 name:wangjie1991
