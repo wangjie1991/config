@@ -1,0 +1,41 @@
+<1> 8k8bit nist --> 8k16bit pcm
+
+sox -r 8000 -b 8 -c 1 -t nist 1.nist -s -r 8000 -b 16 1.wav dither
+
+<2> wav->amr->wav
+ffmpeg -i inFile1.wav -ab 12.2k outFile.amr
+ffmpeg -i outFile.amr outFile.wav
+or
+ffmpeg -acodec libopencore_amrnb -i outFile.amr outFile.wav
+
+<3> wav-alaw->wav
+ffmpeg -i inFile1.wav -acodec pcm_alaw -ar 8000 outFile1.wav
+ffmpeg -i outFile1.wav outFile.wav
+
+<4> mulaw->wav
+ffmpeg -i inFile.wav outFile.wav
+
+<5> mp3->wav
+ffmpeg -i inFile.mp3 outFile.wav
+
+<6> alaw->wav
+sox -e a-law alaw.wav -r 8000 -b 16 out.wav
+
+<7> music.mp3->wav
+ffmpeg -i music.mp3 -ar 8000 -ac 1 outFile.wav
+
+<8> pcm add header -> wav
+sox -s -t raw -r 8000 -c 1 -2 in.pcm out.wav
+ ffmpeg -acodec pcm_s16le -f s16le -ar 8000 -i in.pcm -ar 8000 -ac 1 -ab 128k out.wav
+
+<9> sphere-->wav (wsj data)
+sph2pipe 1.WV1 -f wav 1.wav
+
+<10> vox-->wav
+./ffmpeg -acodec adpcm_ima_oki -f s16le -ar 6000 -i 1211452.V3 12.wav
+
+<11> two path->mono
+ffmpeg -i left.wav -i right.wav -filter_complex amix=inputs=2 mono.wav
+
+<12> stereo filter
+ffmpeg -i fa.mp3 -map_channel 0.0.0 -ar 8000 -ab 128k left.wav -map_channel 0.0.1 -ar 8000 -ab 128k right.wav
