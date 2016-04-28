@@ -1,21 +1,27 @@
+Linux:
+    # install
+    sudo apt-get install vim
+    sudo apt-get install g++
 
-# install
-sudo apt-get install vim
-sudo apt-get install g++
+    sudo apt-get install python-dev
+    sudo apt-get install libevent-dev
+    sudo apt-get install python-pip
+    sudo pip install scrapy
+    sudo apt-get install libssl-dev
+    sudo pip install pybloomfiltermmap
 
-sudo apt-get install python-dev
-sudo apt-get install libevent-dev
-sudo apt-get install python-pip
-sudo pip install scrapy
-sudo apt-get install libssl-dev
-sudo pip install pybloomfiltermmap
+    sudo apt-get install git
+    ssh-keygen -t rsa -C "mononogy@sina.cn"
+    vi .ssh/id_rsa.pub
 
-sudo apt-get install git
-ssh-keygen -t rsa -C "mononogy@sina.cn"
-vi .ssh/id_rsa.pub
+    # common
+    scrapy crawl spider -s JOBDIR=job
+    scrapy crawl spider 2>log
 
-# common
-scrapy crawl spider -s JOBDIR=job
-scrapy crawl spider 2>log
-
+OSX:
+   sudo easy_install pip
+   xcode-select --install
+   sudo pip install scrapy
+   sudo pip uninstall six
+   sudo easy_install six
 
