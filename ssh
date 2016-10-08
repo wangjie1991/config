@@ -13,4 +13,8 @@ service ssh start
 /etc/init.d/ssh start
 ssh localhost
 
+10.9.2.78   ph.horizon-robotics.com
+10.10.10.20 yz-gpu010.hogpu.cc
+10.9.2.84 gpu002.horizon-robotics.com
+
 
